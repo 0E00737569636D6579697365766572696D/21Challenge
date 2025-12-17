@@ -27,3 +27,5 @@ Thumbs.db
 # Sui specific
 .sui/
 
+# Nix specific
+.direnv/

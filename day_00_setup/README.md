@@ -51,6 +51,12 @@ suiup install sui@testnet
 4. Open Ubuntu from Start menu
 5. Follow the suiup installation steps above in Ubuntu terminal
 
+### NixOS-Specific Instructions
+
+**NixOS users:** Instead of using suiup, you can use the `flake.nix` shipped with this repository.
+
+Easiest way to use the flake is running the command `nix develop`.
+
 ### Verify Installation
 
 After installation, verify it worked:
@@ -383,7 +389,7 @@ Before starting Day 1, make sure:
 - [ ] `sui move build` works in day_01
 - [ ] You understand the daily workflow
 
-**All checked?** You're ready! Go to `day_01/README.md` and start learning! 
+**All checked?** You're ready! Go to `day_01/README.md` and start learning!
 
 ---
 
@@ -404,4 +410,4 @@ If you get stuck or have questions:
 
 Don't hesitate to ask questions - we're here to help!
 
-**Happy learning!** 
+**Happy learning!**
