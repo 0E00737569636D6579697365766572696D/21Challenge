@@ -1,44 +1,94 @@
-/// DAY 4: Vector + Ownership Basics
+///
+/// this code was written by a human :)
 /// 
-/// Today you will:
-/// 1. Learn about vectors
-/// 2. Create a list of habits
-/// 3. Understand basic ownership concepts
+module challenge::day_04 
+{
+    use std::string::String;
 
-module challenge::day_04 {
-    use std::vector;
+    #[test_only]
+    use std::string;
 
-    // Copy the Habit struct from day_03
-    public struct Habit has copy, drop {
-        name: vector<u8>,
-        completed: bool,
+    public struct Habit has copy, drop 
+    {
+        name: String,
+        completed: bool
     }
 
-    public fun new_habit(name: vector<u8>): Habit {
-        Habit {
+    public fun new_habit(name: String): Habit 
+    {
+        Habit 
+        {
             name,
-            completed: false,
+            completed: false
         }
     }
 
-    // TODO: Create a struct called 'HabitList' with:
-    // - habits: vector<Habit>
-    // Add 'drop' ability (not copy, because vectors can't be copied)
-    // public struct HabitList has drop {
-    //     // Your field here
-    // }
+    public struct HabitList has drop 
+    {
+        habits: vector<Habit>
+    }
 
-    // TODO: Write a function 'empty_list' that returns an empty HabitList
-    // public fun empty_list(): HabitList {
-    //     // Use vector::empty() to create an empty vector
-    // }
+    public fun empty_list(): HabitList 
+    {
+        HabitList 
+        {
+            habits: vector::empty()
+        }
+    }
 
-    // TODO: Write a function 'add_habit' that takes:
-    // - list: &mut HabitList (mutable reference)
-    // - habit: Habit (by value, transfers ownership)
-    // Use vector::push_back to add the habit
-    // public fun add_habit(list: &mut HabitList, habit: Habit) {
-    //     // Your code here
-    // }
+    public fun add_habit(list: &mut HabitList, habit: Habit) 
+    {
+        vector::push_back(&mut list.habits, habit);
+    }
+
+    #[test]
+    fun test_habit_flow() 
+    {
+        let habit_name = string::utf8(b"Kod yazmak"); 
+        let habit = new_habit(habit_name);
+        let mut list = empty_list();
+
+        add_habit(&mut list, habit);
+        assert!(vector::length(&list.habits) == 1, 0);
+    }
+
+    #[test]
+    fun test_empty_list_starts_empty() 
+    {
+        let list = empty_list();
+        
+        assert!(vector::length(&list.habits) == 0, 1); 
+    }
+
+    #[test]
+    fun test_add_multiple_habits() 
+    {
+        let mut list = empty_list();
+        
+        let h1 = new_habit(string::utf8(b"Su Ic"));
+        let h2 = new_habit(string::utf8(b"Yuruyus Yap"));
+        let h3 = new_habit(string::utf8(b"Kitap Oku"));
+
+        add_habit(&mut list, h1);
+        add_habit(&mut list, h2);
+        add_habit(&mut list, h3);
+
+        assert!(vector::length(&list.habits) == 3, 2);
+    }
+
+    #[test]
+    fun test_verify_habit_data() 
+    {
+        let mut list = empty_list();
+        let name_str = string::utf8(b"Kodlama Calis");
+        
+        let habit = new_habit(name_str);
+        add_habit(&mut list, habit);
+
+        let saved_habit = vector::borrow(&list.habits, 0);
+        
+        assert!(saved_habit.name == string::utf8(b"Kodlama Calis"), 3);
+
+        assert!(saved_habit.completed == false, 4);
+    }
 }
-
