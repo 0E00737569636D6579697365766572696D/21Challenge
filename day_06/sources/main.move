@@ -18,6 +18,8 @@ public struct Habit has copy, drop
     completed: bool
 }
 
+// === Private Functions ===
+
 fun new_habit(name: String): Habit 
 {
     let my_habit = Habit
@@ -36,6 +38,8 @@ fun make_habit(name_bytes: vector<u8>): Habit
 
     return habit
 }
+
+// === Test Functions ===
 
 #[test]
 fun make_habit_working()
