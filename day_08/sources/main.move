@@ -1,26 +1,25 @@
-/// DAY 8: New Module & Simple Task Struct
-/// 
-/// Today you will:
-/// 1. Start a new project: Task Bounty Board
-/// 2. Create a Task struct
-/// 3. Write a constructor function
+///
+/// this code was written by a human :)
+///
+module challenge::day_08;
+use std::string::String;
 
-module challenge::day_08 {
-    use std::string::String;
+public struct Task has copy, drop
+{
+    title: String,
+    reward: u64,
+    done: bool
+}
 
-    // TODO: Define a struct called 'Task' with:
-    // - title: String
-    // - reward: u64
-    // - done: bool
-    // Add 'copy' and 'drop' abilities
-    // public struct Task has copy, drop {
-    //     // Your fields here
-    // }
+fun new_task(title: String, reward: u64): Task
+{
+    let created_task: Task = Task
+    {
+        title: title,
+        reward: reward,
+        done: false
+    };
 
-    // TODO: Write a constructor function 'new_task'
-    // that takes title and reward, returns a Task with done = false
-    // public fun new_task(title: String, reward: u64): Task {
-    //     // Your code here
-    // }
+    return created_task
 }
 
