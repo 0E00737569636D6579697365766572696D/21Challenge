@@ -1,40 +1,64 @@
-/// DAY 9: Enums & TaskStatus
-/// 
-/// Today you will:
-/// 1. Learn about enums
-/// 2. Replace bool with an enum
-/// 3. Use match expressions
+///
+/// this code was written by a human :)
+///
+#[allow(unused_function, dead_code)]
+module challenge::day_09;
 
-module challenge::day_09 {
-    use std::string::String;
+// === Import ===
 
-    // Copy Task struct from day_08, but we'll update it
+use std::string::String;
 
-    // TODO: Define an enum called 'TaskStatus' with two variants:
-    // - Open
-    // - Completed
-    // Add 'copy' and 'drop' abilities
-    // public enum TaskStatus has copy, drop {
-    //     Open,
-    //     Completed,
-    // }
+// === Enum ===
 
-    // TODO: Update Task struct to use TaskStatus instead of done: bool
-    // public struct Task has copy, drop {
-    //     title: String,
-    //     reward: u64,
-    //     status: TaskStatus,  // Changed from done: bool
-    // }
-
-    // TODO: Update new_task to set status = TaskStatus::Open
-    // public fun new_task(title: String, reward: u64): Task {
-    //     // Your code here
-    // }
-
-    // TODO: Write a function 'is_open' that checks if task.status == TaskStatus::Open
-    // public fun is_open(task: &Task): bool {
-    //     // Your code here
-    //     // Hint: task.status == TaskStatus::Open
-    // }
+public enum TaskStatus has copy, drop
+{
+    Open,
+    Completed
 }
+
+// === Struct ===
+
+public struct Task has copy, drop
+{
+    title: String,
+    reward: u64,
+    status: TaskStatus
+}
+
+// === Functions ===
+
+fun new_task(title: String, reward: u64): Task
+{
+    let created_task: Task = Task
+    {
+        title: title,
+        reward: reward,
+        status: TaskStatus::Open
+    };
+
+    return created_task
+}
+
+/* if else yapısı yerine pattern matching */
+/* Eğer task.status Open ise true döndürür değilse false return eder*/
+fun is_open(task: &Task): bool 
+{
+    match (task.status) 
+    {
+        TaskStatus::Open => true, 
+        TaskStatus::Completed => false
+    }
+}
+
+/*fun is_open(task: &Task): bool
+{
+    if (task.status == TaskStatus::Open)
+    {
+        return true
+    }
+    else
+    {
+        return false
+    }
+}*/
 
