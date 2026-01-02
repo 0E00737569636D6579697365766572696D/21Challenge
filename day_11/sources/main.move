@@ -1,62 +1,81 @@
-/// DAY 11: TaskBoard & Address Type
-/// 
-/// Today you will:
-/// 1. Learn about the address type
-/// 2. Create a TaskBoard that tracks ownership
-/// 3. Understand ownership in practice
 ///
-/// Note: You can copy code from day_10/sources/solution.move if needed
-/// 
-/// Related: Day 10 (Visibility), Day 12 (Building on TaskBoard)
+/// this code was written by a human :)
+///
+module challenge::day_11;
 
-module challenge::day_11 {
-    use std::vector;
-    use std::string::String;
+// === Import ===
 
-    // Copy from day_10: TaskStatus enum and Task struct
-    public enum TaskStatus has copy, drop {
-        Open,
-        Completed,
-    }
+use std::string::String;
 
-    public struct Task has copy, drop {
-        title: String,
-        reward: u64,
-        status: TaskStatus,
-    }
+// === Enums ===
 
-    public fun new_task(title: String, reward: u64): Task {
-        Task {
-            title,
-            reward,
-            status: TaskStatus::Open,
-        }
-    }
-
-    public fun complete_task(task: &mut Task) {
-        task.status = TaskStatus::Completed;
-    }
-
-    // TODO: Define a struct called 'TaskBoard' with:
-    // - owner: address (the address that owns this board)
-    // - tasks: vector<Task>
-    // Add 'drop' ability
-    // public struct TaskBoard has drop {
-    //     // Your fields here
-    // }
-
-    // TODO: Write a constructor 'new_board' that takes owner: address
-    // and returns an empty TaskBoard
-    // public fun new_board(owner: address): TaskBoard {
-    //     // Your code here
-    // }
-
-    // TODO: Write a function 'add_task' that:
-    // - Takes board: &mut TaskBoard and task: Task
-    // - Adds the task to the board's vector
-    // The task becomes part of the board's data
-    // public fun add_task(board: &mut TaskBoard, task: Task) {
-    //     // Your code here
-    // }
+public enum TaskStatus has copy, drop
+{
+    Open,
+    Completed
 }
 
+// === Structs ===
+
+public struct Task has copy, drop
+{
+    title: String,
+    reward: u64,
+    status: TaskStatus
+}
+
+public struct TaskBoard has drop
+{
+    owner: address, 
+    tasks: vector<Task>
+}
+
+// === Functions ===
+
+fun new_task(title: String, reward: u64): Task
+{
+    Task
+    {
+        title: title,
+        reward: reward,
+        status: TaskStatus::Open
+    }
+}
+
+///
+/// (en) Creates a new empty board for a specific user (address).
+/// (tr) Belirli bir adres için boş bir pano oluşturur.
+///
+fun new_board(owner: address): TaskBoard
+{
+    TaskBoard
+    {
+        owner: owner,
+        tasks: vector::empty()
+    }
+}
+
+///
+/// (en) Adds a task to the board. Ownership of the task is transferred to the board.
+/// (tr) Panoya görev ekler. Görevin sahipliği artık panoya geçer.
+///
+fun add_task(board: &mut TaskBoard, task: Task)
+{
+    vector::push_back(&mut board.tasks, task);
+}
+
+// === Tests ===
+
+#[test]
+fun test_task_board_flow()
+{
+    let user_address = @0xCAFE;
+    let mut board = new_board(user_address);
+
+    assert!(board.owner == @0xCAFE, 0);
+
+    let task = new_task(b"Move Ogren".to_string(), 100);
+    add_task(&mut board, task);
+
+    assert!(vector::length(&board.tasks) == 1, 1);
+}
