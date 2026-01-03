@@ -1,62 +1,96 @@
-/// DAY 12: Option for Task Lookup
-/// 
-/// Today you will:
-/// 1. Learn about Option<T> type
-/// 2. Write a function to find tasks by title
-/// 3. Handle the case when task is not found
 ///
-/// Note: You can copy code from day_11/sources/solution.move if needed
+/// this code was written by a human :)
+///
+module challenge::day_12;
 
-module challenge::day_12 {
-    use std::vector;
-    use std::string::String;
-    use std::option::{Self, Option};
+use std::string::String;
 
-    // Copy from day_11: TaskStatus, Task, and TaskBoard
-    public enum TaskStatus has copy, drop {
-        Open,
-        Completed,
-    }
+// === Enums ===
 
-    public struct Task has copy, drop {
-        title: String,
-        reward: u64,
-        status: TaskStatus,
-    }
-
-    public struct TaskBoard has drop {
-        owner: address,
-        tasks: vector<Task>,
-    }
-
-    public fun new_task(title: String, reward: u64): Task {
-        Task {
-            title,
-            reward,
-            status: TaskStatus::Open,
-        }
-    }
-
-    public fun new_board(owner: address): TaskBoard {
-        TaskBoard {
-            owner,
-            tasks: vector::empty(),
-        }
-    }
-
-    public fun add_task(board: &mut TaskBoard, task: Task) {
-        vector::push_back(&mut board.tasks, task);
-    }
-
-    // TODO: Write a function 'find_task_by_title' that:
-    // - Takes board: &TaskBoard and title: &String
-    // - Returns Option<u64> (the index if found, None if not found)
-    // - Loops through tasks and compares titles
-    // public fun find_task_by_title(board: &TaskBoard, title: &String): Option<u64> {
-    //     // Your code here
-    //     // Use a while loop to iterate
-    //     // Use option::some(index) if found
-    //     // Use option::none() if not found
-    // }
+public enum TaskStatus has copy, drop
+{
+    Open,
+    Completed
 }
 
+// === Structs ===
+
+public struct Task has copy, drop
+{
+    title: String,
+    reward: u64,
+    status: TaskStatus
+}
+
+public struct TaskBoard has drop
+{
+    owner: address,
+    tasks: vector<Task>
+}
+
+// === Functions ===
+
+public fun new_task(title: String, reward: u64): Task
+{
+    Task
+    {
+        title: title,
+        reward: reward,
+        status: TaskStatus::Open
+    }
+}
+
+public fun new_board(owner: address): TaskBoard
+{
+    TaskBoard
+    {
+        owner: owner,
+        tasks: vector::empty()
+    }
+}
+
+public fun add_task(board: &mut TaskBoard, task: Task)
+{
+    vector::push_back(&mut board.tasks, task);
+}
+
+public fun find_task_by_title(board: &TaskBoard, title: String): Option<u64>
+{
+    let len = vector::length(&board.tasks);
+    let mut i = 0;
+
+    while (i < len)
+    {
+        let task = vector::borrow(&board.tasks, i);
+
+        if (task.title == title)
+        {
+            return option::some(i)
+        };
+
+        i = i + 1;
+    };
+
+    option::none()
+}
+
+// === Tests ===
+
+#[test]
+fun test_find_task()
+{
+    let user = @0x1;
+    let mut board = new_board(user);
+    
+    add_task(&mut board, new_task(b"Move Calis".to_string(), 100)); // index 0
+    add_task(&mut board, new_task(b"Spor Yap".to_string(), 200));   // index 1
+
+    let result_some = find_task_by_title(&board, b"Spor Yap".to_string());
+    
+    assert!(option::is_some(&result_some), 0); // Dolu mu?
+    assert!(option::borrow(&result_some) == 1, 1); // İçindeki 1 mi?
+
+    let result_none = find_task_by_title(&board, b"Uyu".to_string());
+
+    assert!(option::is_none(&result_none), 2); // Boş mu?
+}
